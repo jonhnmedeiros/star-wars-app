@@ -11,6 +11,6 @@ export const App = ()=>{
   },[])
   
   return (
-    <div> {schema?schema.gender:null} </div>
+    <div> {schema?`O personagem ${schema.name} é do sexo ${schema.gender}`:null} </div>
   )
 }

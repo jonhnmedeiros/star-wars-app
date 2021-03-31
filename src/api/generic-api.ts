@@ -1,4 +1,5 @@
 import { getAxiosInstance } from "./axios-instance";
+import {AxiosResponse} from "axios";
 
 export type SWAPIEndpoint = 'people' | 'films' | 'starships' | 'vehicles' | 'species' | 'planets';
 

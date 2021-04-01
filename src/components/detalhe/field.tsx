@@ -1,4 +1,4 @@
-import { Accordion, AccordionDetails, AccordionSummary, Grid } from "@material-ui/core";
+import { Accordion, AccordionDetails, AccordionSummary, Grid, Typography } from "@material-ui/core";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import React from 'react';
 
@@ -17,10 +17,10 @@ export const Field = (props:FieldProps) => {
           expandIcon={<ExpandMoreIcon/>}
             aria-controls='panel1a-content'
             id="panel1a-header">
-
+          <Typography>{nome}</Typography>
         </AccordionSummary>
         <AccordionDetails>
-
+          <Typography>{valor}</Typography>
         </AccordionDetails>
       </Accordion>
     </Grid>

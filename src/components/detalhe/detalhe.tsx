@@ -4,7 +4,8 @@ import { SWAPIEndpoint } from "../../api/generic-api";
 import { getDetailData} from "../../api/controller-defs";
 import { Field } from "./field"
 import { useDetalhe } from "./use-detalhe";
-import { People } from "../../api/schemas/people";
+import {People} from "../../api/schemas/people";
+import { GenericSchema } from "../../api/schemas/generic-schema";
 
 
 interface DetalheProps {
@@ -12,17 +13,17 @@ interface DetalheProps {
   controller : SWAPIEndpoint;
 }
 
-const Detalhe = (props:DetalheProps) => {
+export const Detalhe = <T extends GenericSchema>(props:DetalheProps) => {
   const {id,controller} = props;
-  const {isLoading, result,error} = useDetalhe(id, controller);
+  const {isLoading, result,error} = useDetalhe<T>(id, controller);
   const colunas = getDetailData(controller);
 
-  if (isLoading) return <div><CircularProgress/></div>
+  if (isLoading) return <div className="centralizado"><CircularProgress/></div>
   if (!result) return null;
 
   return (
     <>
-      <Grid container direction={"column"} spacing={2} alignItens={"stretch"}>
+      <Grid container direction={"column"} spacing={2} alignItems={"stretch"}>
         <Grid>
           {Object
             .entries(result)

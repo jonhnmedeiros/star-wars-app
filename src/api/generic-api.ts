@@ -7,6 +7,7 @@ export interface ResourceReturn<T> {
   getSchema:()=>void;
   getById:(id:number)=>Promise<T>;
   getAll:(page:number) => Promise<PageableResponse<T>>;
+  getByPartialName: (search: string, pageNumber: number) => Promise<PageableResponse<T>>;
 }
 
 export interface PageData {
@@ -43,6 +44,13 @@ export const genericController = <T>(endpoint:SWAPIEndpoint):ResourceReturn<T> =
 
   } 
 
+  const getByPartialName = async (search: string, pageNumber: number): Promise<PageableResponse<T>> => {
+    const response = await axios.get(`/${endpoint}/?search=${search}&page=${pageNumber}`)
+    const dados: T[] = (response.data.results);
+    const page: PageData = getPageData(response);
+    return {page, dados};
+  }
+
   const getPageData = (response: AxiosResponse):PageData =>{
     const proximo: number | null = getPageNumber(response.data.next);
     const anterior: number | null = getPageNumber(response.data.previous);
@@ -60,6 +68,6 @@ export const genericController = <T>(endpoint:SWAPIEndpoint):ResourceReturn<T> =
     return null;
   }
 
-  return {getSchema, getById, getAll}
+  return {getSchema, getById, getAll, getByPartialName}
 
 }

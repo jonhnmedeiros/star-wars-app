@@ -1,46 +1,54 @@
 import React from "react";
-import { Button, CircularProgress, Grid } from "@material-ui/core";
-import { SWAPIEndpoint } from "../../api/generic-api";
-import { getDetailData} from "../../api/controller-defs";
-import { Field } from "./field"
-import { useDetalhe } from "./use-detalhe";
+import {useDetalhe} from "./use-detalhe";
 import {People} from "../../api/schemas/people";
-import { GenericSchema } from "../../api/schemas/generic-schema";
-
+import {Field} from "./field";
+import {SWAPIEndpoint} from "../../api/generic/generic-api";
+import {getDetailData} from "../../api/controller-defs";
+import {Button, CircularProgress, Grid} from "@material-ui/core";
+import {useHistory} from "react-router-dom";
+import TelaErro from "../erro/tela-erro";
 
 interface DetalheProps {
-  id : number;
-  controller : SWAPIEndpoint;
+    id: number;
+    controller: SWAPIEndpoint;
 }
 
-export const Detalhe = <T extends GenericSchema>(props:DetalheProps) => {
-  const {id,controller} = props;
-  const {isLoading, result,error} = useDetalhe<T>(id, controller);
-  const colunas = getDetailData(controller);
+const Detalhe = (props:DetalheProps) => {
+    const {id,controller} = props;
+    const {isLoading, result,error} = useDetalhe<People>(id, controller);
+    const history = useHistory();
+    if (isLoading) return <div className={'centralizado'}><CircularProgress/></div>
 
-  if (isLoading) return <div className="centralizado"><CircularProgress/></div>
-  if (!result) return null;
+    const colunas = getDetailData(controller);
+    if (!colunas) return null;
+    const handleClick=()=>{
+        history.goBack();
+    }
 
-  return (
-    <>
-      <Grid container direction={"column"} spacing={2} alignItems={"stretch"}>
-        <Grid>
-          {Object
-            .entries(result)
-            .filter(item=>{
-              const [key] = item;
-              return colunas?.find(campo=>campo===key);
-            })
-            .map(item=>{
-              const [key,value] = item;
-              return <Field nome={key} valor={value}/>
+    if (error) {
+        history.push('/erro/Não conseguimos acessar os nossos servidores')
+        return <TelaErro/>;
+    }
+    if (!result) return null;
+    return (
+        <>
+            <Grid container direction={"column"} spacing={2} alignItems={"stretch"}>
+            {Object.entries(result)
+                .filter(item => {
+                    const [key] = item;
+                    return colunas?.find(campo=>campo===key)
+                })
+                .map((item) => {
+                const [key, value] = item;
+                    return <Grid key={key} item><Field nome={key} valor={value}/></Grid>
             })}
-        </Grid>
-        <Grid>
-          <Button variant={'outlined'}>Voltar</Button>
-        </Grid>
-      </Grid>
-    </>
-  )
-  
+            <Grid item className={'centralizado'}>
+                <Button variant={"outlined"} onClick={handleClick}>Voltar</Button>
+            </Grid>
+            </Grid>
+        </>
+    )
+
 }
+
+export default Detalhe;
